@@ -1,18 +1,17 @@
-package com.example.new_app.api
+package com.example.new_app
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 class ApiManger {
     companion object{
     var baseUrl="https://newsapi.org/"
    private var retrofit:Retrofit?=null
         @Synchronized private fun getInstance():Retrofit{
-            if (retrofit==null)
+            if (retrofit ==null)
 
             {
-                retrofit=Retrofit.Builder().
+                retrofit =Retrofit.Builder().
                 baseUrl(baseUrl)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
@@ -20,7 +19,7 @@ class ApiManger {
             return retrofit!! //>> retrofit
         }
 //to implement the instance class
-        fun getApis():apiServes{
+        fun getApis(): apiServes {
     // apiinterface : apiinterface=retrofit.creat()>>
            return getInstance().create(apiServes::class.java)
         }
