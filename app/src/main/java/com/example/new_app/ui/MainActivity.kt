@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.new_app.R
 import com.example.new_app.databinding.ActivityMainBinding
+import com.example.new_app.ui.category.CategoryFragment
 import com.example.new_app.ui.categoryDetils.CategoryDetilsFragment
 
 class MainActivity : AppCompatActivity() {
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
                 supportFragmentManager.
                 beginTransaction()
-                    .replace(R.id.frameLayout, CategoryDetilsFragment())
+                    .replace(R.id.frameLayout, CategoryFragment())
                     .commit()
 
     }
