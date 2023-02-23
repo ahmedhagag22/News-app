@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import com.example.new_app.R
 import com.example.new_app.ApiManger
@@ -12,6 +13,7 @@ import com.example.new_app.api.model.sourcesResponse.Source
 import com.example.new_app.api.model.sourcesResponse.SourcesResponse
 import com.example.new_app.constant
 import com.example.new_app.databinding.FragmentCategoryDetilsBinding
+import com.example.new_app.ui.category.CategoryDataClass
 import com.example.new_app.ui.news.NewsFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
@@ -35,8 +37,6 @@ class CategoryDetilsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         //load api
         loadApi()
-
-
     }
 
     //show data on the frame layout >> another fragment
@@ -51,16 +51,18 @@ class CategoryDetilsFragment : Fragment() {
         //run the progass bar and hide the text and btn
         showLoading()
 
+
         //call api
         ApiManger
             .getApis()
-            .getSources(constant.apiKay)
+            .getSources(constant.apiKay, category.id)
             .enqueue(object : Callback<SourcesResponse> {
                 override fun onResponse(
                     call: Call<SourcesResponse>,
                     response: Response<SourcesResponse>
                 ) {
                     if (response.isSuccessful) {
+                        viewBinding.tabLayout.isVisible=true
                         viewBinding.loadingBar.isVisible = false
 
                         //func to show sources on the tap
@@ -95,6 +97,11 @@ class CategoryDetilsFragment : Fragment() {
             tab.text = source?.name
             tab.tag = source
             viewBinding.tabLayout.addTab(tab)
+            var layoutParams=LinearLayout.LayoutParams(tab.view.layoutParams)
+            layoutParams.marginEnd=12
+            layoutParams.marginStart=12
+            layoutParams.topMargin=18
+            tab.view.layoutParams=layoutParams
         }
         viewBinding.tabLayout
             .addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -124,6 +131,7 @@ class CategoryDetilsFragment : Fragment() {
     fun showLoading() {
         viewBinding.loadingBar.isVisible = true
         viewBinding.layoutError.isVisible = false
+        viewBinding.tabLayout.isVisible=false
     }
 
     fun showErrorLayout(message: String?) {
@@ -132,5 +140,14 @@ class CategoryDetilsFragment : Fragment() {
         viewBinding.txtError.text = message
     }
 
+    lateinit var category: CategoryDataClass
+
+    companion object {
+        fun getInstance(category: CategoryDataClass): CategoryDetilsFragment {
+            var fragment = CategoryDetilsFragment()
+            fragment.category = category
+            return fragment
+        }
+    }
 
 }
