@@ -27,7 +27,7 @@ class NewsAdapter(var item:List<News?>?):RecyclerView.Adapter<NewsAdapter.ViewHo
         //load data by the url > gilde
         Glide.with(holder.itemView)
             .load(item?.get(position)?.urlToImage)
-            .placeholder(R.drawable.ic_run)
+            .placeholder(R.drawable.ic_wifi)
             .into(holder.viewBinding.imageNews)
     }
 
