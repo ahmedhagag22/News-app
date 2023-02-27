@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import com.example.new_app.ui.MainActivity
+import com.example.new_app.ui.Main.MainActivity
 import com.example.new_app.R
 
 class SplashActivity : AppCompatActivity() {

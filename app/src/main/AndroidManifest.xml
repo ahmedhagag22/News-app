@@ -28,7 +28,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.Main.MainActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
