@@ -1,15 +1,15 @@
-package com.example.new_app.ui.Main
+package com.example.new_app.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
-
-import androidx.databinding.DataBindingUtil
+import androidx.drawerlayout.widget.DrawerLayout
 import com.example.new_app.R
 import com.example.new_app.databinding.ActivityMainBinding
 import com.example.new_app.ui.category.CategoryDataClass
 import com.example.new_app.ui.category.CategoryFragment
-import com.example.new_app.ui.categoryDetils.CategoryDetailsFragment
+import com.example.new_app.ui.categoryDetils.CategoryDetilsFragment
 import com.example.new_app.ui.setting.SettingsFragment
 
 class MainActivity : AppCompatActivity(), CategoryFragment.OnCategoryClickListener {
@@ -21,9 +21,8 @@ class MainActivity : AppCompatActivity(), CategoryFragment.OnCategoryClickListen
     var categoryFragment = CategoryFragment()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewBinding=DataBindingUtil.setContentView(this,R.layout.activity_main)
-        //viewBinding = ActivityMainBinding.inflate(layoutInflater)
-       //setContentView(viewBinding.root)
+        viewBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(viewBinding.root)
 
 
         categoryFragment.onCategoryClickListener = this
@@ -40,7 +39,7 @@ class MainActivity : AppCompatActivity(), CategoryFragment.OnCategoryClickListen
 
     fun showCategoryDetilsFragment(category: CategoryDataClass) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.frameLayout, CategoryDetailsFragment.getInstance(category))
+            .replace(R.id.frameLayout, CategoryDetilsFragment.getInstance(category))
             .addToBackStack(null)
             .commit()
 
@@ -51,7 +50,7 @@ class MainActivity : AppCompatActivity(), CategoryFragment.OnCategoryClickListen
             this, viewBinding.myDrawerLayout, viewBinding.toolbar,
             R.string.nav_open, R.string.nav_close
         )
-        viewBinding.myDrawerLayout.addDrawerListener(toggle)
+        viewBinding.root.addDrawerListener(toggle)
         toggle.syncState()
 
         viewBinding.navView.setNavigationItemSelectedListener { items ->
@@ -65,7 +64,7 @@ class MainActivity : AppCompatActivity(), CategoryFragment.OnCategoryClickListen
                 }
             }
 
-            viewBinding.myDrawerLayout.closeDrawers()
+            viewBinding.root.closeDrawers()
 
             return@setNavigationItemSelectedListener true
 
