@@ -13,7 +13,12 @@ class CategoryAdapter(var item: List<CategoryDataClass>) :
 
 
     class ViewHolder(var viewBinding: CategoryItemRecyclerBinding) :
-        RecyclerView.ViewHolder(viewBinding.root)
+        RecyclerView.ViewHolder(viewBinding.root) {
+        fun bind(categoryDataClass: CategoryDataClass?) {
+            viewBinding.category = categoryDataClass
+            viewBinding.invalidateAll()
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var viewBinding = CategoryItemRecyclerBinding.inflate(
@@ -26,31 +31,26 @@ class CategoryAdapter(var item: List<CategoryDataClass>) :
 
         //here >  but data on the view > (category -item-xml )
         // by the data class > item :List<CategoryDataClass>
-        holder.viewBinding.name
-            .text = item[position].name
-        holder.viewBinding.image
-            .setImageResource(item[position].imageId)
-        holder.viewBinding.layoutItem
-            .setCardBackgroundColor(
-                ContextCompat.getColor(holder.itemView.context, item[position].backgroundColorId)
-            )
+        var items = item?.get(position)
+        holder.bind(items)
 
         //it > if-- true >
         onItemClickListener?.let {
             holder.viewBinding.layoutItem.setOnClickListener(View.OnClickListener {
-                onItemClickListener?.onItemCkick(position,item[position])
+                onItemClickListener?.onItemCkick(position, item[position])
             })
         }
 
 
+    }
 
+    var onItemClickListener: OnItemClickListener? = null
+
+    interface OnItemClickListener {
+        fun onItemCkick(pos: Int, item: CategoryDataClass)
 
     }
-            var onItemClickListener:OnItemClickListener? =null
-    interface OnItemClickListener{
-    fun onItemCkick(pos:Int,item:CategoryDataClass)
 
-    }
     override fun getItemCount(): Int = item.size ?: 0
 
 

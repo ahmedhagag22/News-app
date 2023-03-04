@@ -17,11 +17,11 @@ class NewsViewModel :ViewModel() {
     var showErrorLayout=MutableLiveData<String>()
     var newsList= MutableLiveData<List<News?>?>()
 
-     fun getNews(sourceId:String) {
+     fun getNews(sourceId:String,pageSize:Int ,page :Int) {
        // showLoading()
         showLoading.value=true
         ApiManger.getApis()
-            .getNews(constant.apiKay, sourceId)
+            .getNews(constant.apiKay, sourceId,pageSize,page)
             .enqueue(object : Callback<NewsResponse> {
                 override fun onResponse(
                     call: Call<NewsResponse>,
