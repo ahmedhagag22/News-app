@@ -1,18 +1,24 @@
 package com.example.new_app.ui.news
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.new_app.ApiManger
 import com.example.new_app.api.model.newsResponse.News
 import com.example.new_app.api.model.newsResponse.NewsResponse
 import com.example.new_app.api.model.sourcesResponse.Source
 import com.example.new_app.constant
 import com.example.new_app.databinding.FragmentNewsBinding
+import com.example.new_app.ui.newsDetails.NewsDetailsActivity
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,6 +26,9 @@ import retrofit2.Response
 
 
 class NewsFragment : Fragment() {
+    var pageSize = 20
+    var curranPage = 1
+    var isLoading = false
     lateinit var source: Source
     lateinit var viewModel: NewsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +59,9 @@ class NewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //call api news
-        viewModel.getNews(source.id ?: "")
+        getNews()
+
+        //change data (observe > live data (dataBinding))
         subscribeToLiveData()
 
         // initRecycler
@@ -73,9 +84,43 @@ class NewsFragment : Fragment() {
 
     }
 
+    fun getNews() {
+        viewModel.getNews(source.id ?: "", pageSize = pageSize, page = curranPage)
+        isLoading = false
+    }
+
     var adapter = NewsAdapter(null)
     private fun initRecyclerView() {
         viewBinding.recyclerViewNews.adapter = adapter
+
+
+        //pageSize on the Screen
+        viewBinding.recyclerViewNews.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                var layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                var lastVisibleItemCount = layoutManager.findLastVisibleItemPosition()
+                var totalItemCount = layoutManager.itemCount
+                var visibleThreshold = 3
+                if (!isLoading && totalItemCount - lastVisibleItemCount <= visibleThreshold) {
+                    isLoading = true
+                    curranPage++
+                    getNews()
+                }
+
+
+            }
+        })
+
+        adapter.onNewsClick=object :NewsAdapter.OnNewsClick{
+            override fun onItemClick(news: News?) {
+                var intent=Intent(requireContext(),NewsDetailsActivity::class.java)
+                intent.putExtra("news",news)
+                startActivity(intent)
+            }
+
+        }
     }
 
 
