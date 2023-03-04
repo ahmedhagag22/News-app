@@ -11,8 +11,11 @@ import retrofit2.http.Query
 interface apiServes {
     @GET("v2/top-headlines/sources")
     //bass the apiKey in parmater func
-    fun getSources(@Query ("apiKey")apiKy:String):Call<SourcesResponse>
+    fun getSources(@Query ("apiKey")apiKy:String, @Query("category")category:String):Call<SourcesResponse>
     @GET("v2/everything")
     fun getNews(@Query ("apiKey")apiKy:String
-    ,@Query("sources")sources:String):Call<NewsResponse>
+    ,@Query("sources")sources:String
+    ,@Query("pageSize") pageSize:Int
+    ,@Query("page")page:Int
+    ):Call<NewsResponse>
 }
