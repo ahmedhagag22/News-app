@@ -66,6 +66,9 @@ class NewsFragment : Fragment() {
 
         // initRecycler
         initRecyclerView()
+        viewBinding.loadAgin.setOnClickListener {
+            getNews()
+        }
     }
 
     fun subscribeToLiveData() {

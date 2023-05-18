@@ -5,6 +5,10 @@
 
     <data>
 
+        <variable
+            name="vm"
+            type="com.example.new_app.ui.news.NewsViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -80,10 +84,12 @@
                 tools:text="error" />
 
             <Button
+                android:id="@+id/loadAgin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/btn_error_shape"
+
                 android:paddingHorizontal="29dp"
                 android:paddingVertical="13dp"
                 android:text="Load again"
