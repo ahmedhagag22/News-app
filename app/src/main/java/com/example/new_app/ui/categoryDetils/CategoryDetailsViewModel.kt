@@ -6,7 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.new_app.ApiManger
 import com.example.new_app.api.model.sourcesResponse.Source
 import com.example.new_app.api.model.sourcesResponse.SourcesResponse
+import com.example.new_app.apiServes
 import com.example.new_app.constant
+import com.example.new_app.repo.repositoriesContract.sources.SourcesRepository
+import com.example.new_app.repo.repositoriesImp.sources.SourcesRemoteDataSourceImpl
+import com.example.new_app.repo.repositoriesImp.sources.SourcesRepositoryImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -17,6 +21,11 @@ class CategoryDetailsViewModel : ViewModel() {
     var showTabLayout = MutableLiveData<Boolean>()
     var sourceLiveData = MutableLiveData<List<Source?>?>()
     var showErrorLayout = MutableLiveData<String>()
+    // manual dependency injection
+
+    var remoteDataSource=SourcesRemoteDataSourceImpl(ApiManger.getApis())
+    //obj of type repo
+    var sourcesRepository:SourcesRepository=SourcesRepositoryImpl(remoteDataSource)
 
     fun loadApi(categoryId: String) {
         //run the loading bar and hide the text and btn
@@ -25,12 +34,10 @@ class CategoryDetailsViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                var DataResponse = ApiManger
-                    .getApis()
-                    .getSources(constant.apiKay, categoryId)
+                var sources =sourcesRepository.getSourceByCategoryId(categoryId)
                 showTabLayout.value = true
                 showLoading.value = false
-                sourceLiveData.value = (DataResponse.sources)
+                sourceLiveData.value = (sources)
             } catch (e: HttpException) {
                 //convert gson (error body) to response message
                 var gson = Gson()

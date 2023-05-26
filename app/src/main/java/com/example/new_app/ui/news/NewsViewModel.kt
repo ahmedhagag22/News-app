@@ -6,7 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.new_app.ApiManger
 import com.example.new_app.api.model.newsResponse.News
 import com.example.new_app.api.model.newsResponse.NewsResponse
+import com.example.new_app.apiServes
 import com.example.new_app.constant
+import com.example.new_app.repo.repositoriesContract.news.NewsRepository
+import com.example.new_app.repo.repositoriesImp.news.NewsRemoteDataSourcesImpl
+import com.example.new_app.repo.repositoriesImp.news.NewsRepositoryImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -16,6 +20,11 @@ class NewsViewModel : ViewModel() {
     var showErrorLayout = MutableLiveData<String>()
     var newsList = MutableLiveData<List<News?>?>()
 
+    // manual dependency injection
+    var newsRemoteDataSources=NewsRemoteDataSourcesImpl(ApiManger.getApis())
+    //obj of newsRepo
+    var newsRepository:NewsRepository=NewsRepositoryImpl(newsRemoteDataSources)
+
     // call api >> by the coroutine
 
     fun getNews(sourceId: String, pageSize: Int, page: Int) {
@@ -23,10 +32,9 @@ class NewsViewModel : ViewModel() {
         showLoading.value = true
         viewModelScope.launch {
             try {
-                var DataResponse = ApiManger.getApis()
-                    .getNews(constant.apiKay, sourceId, pageSize, page)
+                var newsResponse = newsRepository
                 showLoading.value = false
-                newsList.value = DataResponse.articles
+                newsList.value = newsResponse.getNewsBySourceId(sourceId,pageSize,page)
 
             } catch (t: HttpException) {
                 val errorMessage = Gson().fromJson(
