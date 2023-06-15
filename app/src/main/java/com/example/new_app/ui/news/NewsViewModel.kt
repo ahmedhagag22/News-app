@@ -6,11 +6,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.new_app.ApiManger
 import com.example.new_app.api.model.newsResponse.News
 import com.example.new_app.api.model.newsResponse.NewsResponse
-import com.example.new_app.apiServes
-import com.example.new_app.constant
+import com.example.new_app.dataBase.NewsDatabase
+import com.example.new_app.repo.NetworkHandler
 import com.example.new_app.repo.repositoriesContract.news.NewsRepository
+import com.example.new_app.repo.repositoriesContract.sources.SourcesOfflineDataSource
+import com.example.new_app.repo.repositoriesContract.sources.SourcesRemoteDataSource
+import com.example.new_app.repo.repositoriesContract.sources.SourcesRepository
 import com.example.new_app.repo.repositoriesImp.news.NewsRemoteDataSourcesImpl
 import com.example.new_app.repo.repositoriesImp.news.NewsRepositoryImpl
+import com.example.new_app.repo.repositoriesImp.sources.SourcesOfflineDataSourceImpl
+import com.example.new_app.repo.repositoriesImp.sources.SourcesRemoteDataSourceImpl
+import com.example.new_app.repo.repositoriesImp.sources.SourcesRepositoryImpl
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -19,11 +25,33 @@ class NewsViewModel : ViewModel() {
     var showLoading = MutableLiveData<Boolean>()
     var showErrorLayout = MutableLiveData<String>()
     var newsList = MutableLiveData<List<News?>?>()
+    var networkHandler: NetworkHandler
+    var sourcesOffLineDataSource: SourcesOfflineDataSource
+    var sourcesRemoteDataSource: SourcesRemoteDataSource
+    var sourcesRepository: SourcesRepository
+
+
+    init {
+        networkHandler = object : NetworkHandler {
+            override fun isOnline(): Boolean {
+                return true
+            }
+        }
+        sourcesRemoteDataSource = SourcesRemoteDataSourceImpl(ApiManger.getApis())
+        sourcesOffLineDataSource = SourcesOfflineDataSourceImpl(NewsDatabase.getInstance()!!)
+        sourcesRepository = SourcesRepositoryImpl(
+            remoteDataSource = sourcesRemoteDataSource,
+            offlineDataSource = sourcesOffLineDataSource,
+            networkHandler = networkHandler
+        )
+
+    }
 
     // manual dependency injection
-    var newsRemoteDataSources=NewsRemoteDataSourcesImpl(ApiManger.getApis())
+    var newsRemoteDataSources = NewsRemoteDataSourcesImpl(ApiManger.getApis())
+
     //obj of newsRepo
-    var newsRepository:NewsRepository=NewsRepositoryImpl(newsRemoteDataSources)
+    var newsRepository: NewsRepository = NewsRepositoryImpl(newsRemoteDataSources)
 
     // call api >> by the coroutine
 
@@ -34,7 +62,7 @@ class NewsViewModel : ViewModel() {
             try {
                 var newsResponse = newsRepository
                 showLoading.value = false
-                newsList.value = newsResponse.getNewsBySourceId(sourceId,pageSize,page)
+                newsList.value = newsResponse.getNewsBySourceId(sourceId, pageSize, page)
 
             } catch (t: HttpException) {
                 val errorMessage = Gson().fromJson(

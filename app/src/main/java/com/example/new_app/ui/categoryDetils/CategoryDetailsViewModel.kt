@@ -6,9 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.new_app.ApiManger
 import com.example.new_app.api.model.sourcesResponse.Source
 import com.example.new_app.api.model.sourcesResponse.SourcesResponse
-import com.example.new_app.apiServes
-import com.example.new_app.constant
+import com.example.new_app.dataBase.NewsDatabase
+import com.example.new_app.repo.NetworkHandler
 import com.example.new_app.repo.repositoriesContract.sources.SourcesRepository
+import com.example.new_app.repo.repositoriesImp.sources.SourcesOfflineDataSourceImpl
 import com.example.new_app.repo.repositoriesImp.sources.SourcesRemoteDataSourceImpl
 import com.example.new_app.repo.repositoriesImp.sources.SourcesRepositoryImpl
 import com.google.gson.Gson
@@ -21,11 +22,28 @@ class CategoryDetailsViewModel : ViewModel() {
     var showTabLayout = MutableLiveData<Boolean>()
     var sourceLiveData = MutableLiveData<List<Source?>?>()
     var showErrorLayout = MutableLiveData<String>()
+    var networkHandler: NetworkHandler
     // manual dependency injection
 
-    var remoteDataSource=SourcesRemoteDataSourceImpl(ApiManger.getApis())
+    init {
+        networkHandler = object : NetworkHandler {
+            override fun isOnline(): Boolean {
+                return true
+            }
+
+        }
+
+    }
+
+    var remoteDataSource = SourcesRemoteDataSourceImpl(ApiManger.getApis())
+    var sourcesOffLineDataSource = SourcesOfflineDataSourceImpl(NewsDatabase.getInstance()!!)
+
     //obj of type repo
-    var sourcesRepository:SourcesRepository=SourcesRepositoryImpl(remoteDataSource)
+    var sourcesRepository: SourcesRepository = SourcesRepositoryImpl(
+        remoteDataSource = remoteDataSource,
+        offlineDataSource = sourcesOffLineDataSource,
+        networkHandler = networkHandler
+    )
 
     fun loadApi(categoryId: String) {
         //run the loading bar and hide the text and btn
@@ -34,7 +52,7 @@ class CategoryDetailsViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                var sources =sourcesRepository.getSourceByCategoryId(categoryId)
+                var sources = sourcesRepository.getSourceByCategoryId(categoryId)
                 showTabLayout.value = true
                 showLoading.value = false
                 sourceLiveData.value = (sources)
@@ -47,12 +65,12 @@ class CategoryDetailsViewModel : ViewModel() {
                 //fun to show error on the txt after convert error body
                 showErrorLayout.value = errorResponse.message ?: ""
 
-            }
-            catch (e:Exception)
-            {
-                showErrorLayout.value=e.localizedMessage
+            } catch (e: Exception) {
+                showErrorLayout.value = e.localizedMessage
             }
         }
+
+
 //            .getApis()
 //            .getSources(constant.apiKay, categoryId)
 //            .enqueue(object : Callback<SourcesResponse> {

@@ -6,16 +6,17 @@ import com.example.new_app.api.model.sourcesResponse.Source
 
 
 //repo interface
-interface SourcesRepository{
-    suspend fun getSourceByCategoryId(categoryId:String):List<Source?>?
+interface SourcesRepository {
+    suspend fun getSourceByCategoryId(categoryId: String): List<Source?>?
 }
+
 // data class interface > online >> call api to get data
-interface SourcesRemoteDataSource
-{
-    suspend fun  getSourceByCategoryId(categoryId:String):List<Source?>?
+interface SourcesRemoteDataSource {
+    suspend fun getSourceByCategoryId(categoryId: String): List<Source?>?
 }
 
 // data class interface >>offline >>>> room dataBase (cashing)
-interface SourcesOfflineDataSource
-{
+interface SourcesOfflineDataSource {
+    suspend fun getSourceByCategoryId(categoryId: String): List<Source?>?
+    suspend fun saveSources(sources: List<Source>)
 }

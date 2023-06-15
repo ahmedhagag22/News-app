@@ -8,6 +8,3 @@ interface NewsRepository{
 interface NewsRemoteDataSources{
     suspend fun getNewsBySourceId(sourceId:String,pageSize:Int,page:Int):List<News?>?
 }
-interface NewsLocalDataSources{
-
-}
