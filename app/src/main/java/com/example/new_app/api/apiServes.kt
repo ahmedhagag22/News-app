@@ -1,4 +1,4 @@
-package com.example.new_app
+package com.example.new_app.api
 
 import com.example.new_app.api.model.newsResponse.NewsResponse
 import com.example.new_app.api.model.sourcesResponse.SourcesResponse

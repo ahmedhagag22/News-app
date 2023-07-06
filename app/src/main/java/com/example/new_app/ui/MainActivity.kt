@@ -11,7 +11,9 @@ import com.example.new_app.ui.category.CategoryDataClass
 import com.example.new_app.ui.category.CategoryFragment
 import com.example.new_app.ui.categoryDetils.CategoryDetailsFragment
 import com.example.new_app.ui.setting.SettingsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CategoryFragment.OnCategoryClickListener {
     override fun onCategoryClick(category: CategoryDataClass) {
         showCategoryDetilsFragment(category)

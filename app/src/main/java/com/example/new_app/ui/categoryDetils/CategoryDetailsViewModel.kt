@@ -3,19 +3,20 @@ package com.example.new_app.ui.categoryDetils
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.new_app.ApiManger
+import com.example.new_app.api.ApiManger
 import com.example.new_app.api.model.sourcesResponse.Source
 import com.example.new_app.api.model.sourcesResponse.SourcesResponse
-import com.example.new_app.apiServes
-import com.example.new_app.constant
 import com.example.new_app.repo.repositoriesContract.sources.SourcesRepository
 import com.example.new_app.repo.repositoriesImp.sources.SourcesRemoteDataSourceImpl
 import com.example.new_app.repo.repositoriesImp.sources.SourcesRepositoryImpl
 import com.google.gson.Gson
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class CategoryDetailsViewModel : ViewModel() {
+@HiltViewModel
+class CategoryDetailsViewModel @Inject constructor ( val sourcesRepository: SourcesRepository) : ViewModel() {
 
     var showLoading = MutableLiveData<Boolean>()
     var showTabLayout = MutableLiveData<Boolean>()
@@ -23,9 +24,9 @@ class CategoryDetailsViewModel : ViewModel() {
     var showErrorLayout = MutableLiveData<String>()
     // manual dependency injection
 
-    var remoteDataSource=SourcesRemoteDataSourceImpl(ApiManger.getApis())
-    //obj of type repo
-    var sourcesRepository:SourcesRepository=SourcesRepositoryImpl(remoteDataSource)
+//    var remoteDataSource=SourcesRemoteDataSourceImpl(ApiManger.getApis())
+//    //obj of type repo
+//    var sourcesRepository:SourcesRepository=SourcesRepositoryImpl(remoteDataSource)
 
     fun loadApi(categoryId: String) {
         //run the loading bar and hide the text and btn

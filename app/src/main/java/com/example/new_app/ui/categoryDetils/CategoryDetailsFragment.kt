@@ -7,23 +7,20 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.example.new_app.R
 import com.example.new_app.api.model.sourcesResponse.Source
 import com.example.new_app.databinding.FragmentCategoryDetilsBinding
 import com.example.new_app.ui.category.CategoryDataClass
 import com.example.new_app.ui.news.NewsFragment
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class CategoryDetailsFragment : Fragment() {
     lateinit var viewBinding: FragmentCategoryDetilsBinding
-    lateinit var viewModel: CategoryDetailsViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val viewModel: CategoryDetailsViewModel by viewModels()
 
-        viewModel = ViewModelProvider(this)[CategoryDetailsViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

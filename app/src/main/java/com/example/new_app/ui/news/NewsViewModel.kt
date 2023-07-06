@@ -3,27 +3,28 @@ package com.example.new_app.ui.news
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.new_app.ApiManger
+import com.example.new_app.api.ApiManger
 import com.example.new_app.api.model.newsResponse.News
 import com.example.new_app.api.model.newsResponse.NewsResponse
-import com.example.new_app.apiServes
-import com.example.new_app.constant
 import com.example.new_app.repo.repositoriesContract.news.NewsRepository
 import com.example.new_app.repo.repositoriesImp.news.NewsRemoteDataSourcesImpl
 import com.example.new_app.repo.repositoriesImp.news.NewsRepositoryImpl
 import com.google.gson.Gson
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class NewsViewModel : ViewModel() {
+@HiltViewModel
+class NewsViewModel @Inject constructor(val newsRepository: NewsRepository) : ViewModel() {
     var showLoading = MutableLiveData<Boolean>()
     var showErrorLayout = MutableLiveData<String>()
     var newsList = MutableLiveData<List<News?>?>()
 
     // manual dependency injection
-    var newsRemoteDataSources=NewsRemoteDataSourcesImpl(ApiManger.getApis())
-    //obj of newsRepo
-    var newsRepository:NewsRepository=NewsRepositoryImpl(newsRemoteDataSources)
+//    var newsRemoteDataSources=NewsRemoteDataSourcesImpl(ApiManger.getApis())
+//    //obj of newsRepo
+//    var newsRepository:NewsRepository=NewsRepositoryImpl(newsRemoteDataSources)
 
     // call api >> by the coroutine
 
